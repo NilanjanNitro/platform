@@ -7,6 +7,7 @@ print("Opened database successfully")
 cur = conn.cursor()
 cur.execute('''CREATE TABLE USEMGMNT
                   (TENANT_ID INT PRIMARY KEY        NOT NULL,
+                  TENANT_NAME        TEXT    NOT NULL,
                   USERS_ID           TEXT    NOT NULL,
                   DEVICES            TEXT,
                   ADMIN_USER_ID      TEXT    NOT  NULL,
