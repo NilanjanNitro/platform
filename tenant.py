@@ -2,8 +2,6 @@ import psycopg2
 from fluent import event
 from fluent import sender
 
-import user
-
 
 class Tenant:
     tenant_id: int
@@ -13,11 +11,9 @@ class Tenant:
     admin_user_id: str
     apps_id: list
     rules: list
-    sender.setup('fluentd.test', host='localhost', port=24224)
 
-    def __init__(self, tenant_id, tenant_name, users_id, devices, admin_user_id, apps_id, rules):
+    def __init__(self, tenant_id, users_id, devices, admin_user_id, apps_id, rules):
         self.tenant_id = tenant_id
-        self.tenant_name = tenant_name
         self.users_id = users_id
         self.devices = devices
         self.admin_user_id = admin_user_id
@@ -27,6 +23,8 @@ class Tenant:
         self._devices_ = ()
         self._apps_ = ()
         self._rul_ = ()
+        self.sender.setup('fluentd.test', host='localhost', port=24224)
+        self.event.Event('follow', {'function': 'tenant_constructor', 'status': 'Object initialized'})
 
     def create_tenant(self):
         conn: psycopg2.connect()
@@ -36,14 +34,13 @@ class Tenant:
                                     port="5432")
             self.event.Event('follow', {'function': 'create_tenant', 'status': 'DB_conn_opened'})
             cur = conn.cursor()
-            cur.execute("INSERT INTO USEMGMNT (TENANT_ID, TENANT_NAME, USERS_ID, DEVICES, ADMIN_USER_ID, APPS_ID, RULES) \
-                                          VALUES (" + str(self.tenant_id) + ", '" + self.tenant_name + "', '" + str(
-                self.users_id) + "', '" + str(
+            cur.execute("INSERT INTO USEMGMNT (TENANT_ID, USERS_ID, DEVICES, ADMIN_USER_ID, APPS_ID, RULES) \
+                                          VALUES (" + str(self.tenant_id) + ", '" + str(self.users_id) + "', '" + str(
                 self.devices) + "', '" + self.admin_user_id + "', '" + str(self.apps_id) + "', '" + str(
                 self.rules) + "') ;")
             conn.commit()
+
             self.event.Event('follow', {'function': 'create_tenant', 'status': 'successful'})
-            usr = user.User()
         except:
             self.event.Event('follow', {'function': 'create_tenant', 'status': 'exception occurred'})
         finally:
@@ -55,6 +52,7 @@ class Tenant:
         conn: psycopg2.connect()
         tn_id = str(tenant_id)
         tn: Tenant
+        sender.setup('fluentd.test', host='localhost', port=24224)
         try:
             conn = psycopg2.connect(database="postgres", user="postgres", password="jio@Nilanjan", host="127.0.0.1",
                                     port="5432")
@@ -84,6 +82,7 @@ class Tenant:
     def add_tenant_user(user_id: int, tenant_id: int):
         conn: psycopg2.connect()
         tn_id = str(tenant_id)
+        sender.setup('fluentd.test', host='localhost', port=24224)
         try:
             conn = psycopg2.connect(database="postgres", user="postgres", password="jio@Nilanjan", host="127.0.0.1",
                                     port="5432")
@@ -109,6 +108,7 @@ class Tenant:
         conn: psycopg2.connect()
         _device_: list
         tn_id = str(tenant_id)
+        sender.setup('fluentd.test', host='localhost', port=24224)
         try:
             conn = psycopg2.connect(database="postgres", user="postgres", password="jio@Nilanjan", host="127.0.0.1",
                                     port="5432")
@@ -132,6 +132,7 @@ class Tenant:
     def update_tenant_admin(admin_user_id: int, tenant_id: int):
         conn: psycopg2.connect()
         tn_id = str(tenant_id)
+        sender.setup('fluentd.test', host='localhost', port=24224)
         try:
             conn = psycopg2.connect(database="postgres", user="postgres", password="jio@Nilanjan", host="127.0.0.1",
                                     port="5432")
@@ -152,6 +153,7 @@ class Tenant:
         conn: psycopg2.connect()
         _apps_: list
         tn_id = str(tenant_id)
+        sender.setup('fluentd.test', host='localhost', port=24224)
         try:
             conn = psycopg2.connect(database="postgres", user="postgres", password="jio@Nilanjan", host="127.0.0.1",
                                     port="5432")
@@ -176,6 +178,7 @@ class Tenant:
         conn: psycopg2.connect()
         _rul_: list
         tn_id = str(tenant_id)
+        sender.setup('fluentd.test', host='localhost', port=24224)
         try:
             conn = psycopg2.connect(database="postgres", user="postgres", password="jio@Nilanjan", host="127.0.0.1",
                                     port="5432")

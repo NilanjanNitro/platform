@@ -9,7 +9,11 @@ class A:
         # print(A.a)
 
 
-if __name__ == "__main__":
+def main():
     c1 = A(1)
     c2 = A(1)
     c3 = A(1)
+
+
+if __name__ == "__main__":
+    main()
